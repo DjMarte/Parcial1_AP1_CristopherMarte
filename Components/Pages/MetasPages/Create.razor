@@ -1,0 +1,74 @@
+﻿@page "/CreateMetas"
+@inject MetaService metaService
+@rendermode InteractiveServer
+@inject NavigationManager navigation
+
+<PageTitle>Crear Nuevo Meta</PageTitle>
+<EditForm Model="meta" OnValidSubmit="Crear">
+	<DataAnnotationsValidator/>
+	<!--Header-->
+	<div class="card-header">
+		<h3><strong>Crear Nuevo Meta</strong></h3>
+	</div>
+	<!--Body-->
+	<div>
+		<!--Meta Id:-->
+		<div class="mb-4">
+			<div class="col-5">
+				<label class="form-label" for="metaId"><strong>Meta Id:</strong></label>
+				<InputNumber class="form-control" id="metaid" @bind-Value="meta.MetaId"></InputNumber>
+			</div>
+		</div>
+		<!--Fecha-->
+		<div class="mb-4">
+			<div class="col-5">
+				<label class="form-label" for="fecha"><strong>Fecha:</strong></label>
+				<InputDate class="form-control" id="fecha" @bind-Value="meta.Fecha"></InputDate>
+				<ValidationMessage For="@(() => meta.Fecha)"></ValidationMessage>
+			</div>
+		</div>
+		<!--Descripción-->
+		<div class=" mb-4">
+			<div class="col-5">
+				<label class="form-label" for="descripcion"><strong>Descripci&oacute;n</strong></label>
+				<InputTextArea class="form-control" id="descripcion" @bind-Value="meta.Descripcion"></InputTextArea>
+				<ValidationMessage For="@(() => meta.Descripcion)"></ValidationMessage>
+			</div>
+		</div>
+		<!--Monto-->
+		<div class="mb-3">
+			<div class="col-4">
+				<label class="form-label" for="monto"><strong>Monto:</strong></label>
+				<InputNumber class="form-control" id="monto" @bind-Value="meta.Monto"></InputNumber>
+				<ValidationMessage For="@(() => meta.Monto)"></ValidationMessage>
+			</div>
+		</div>
+		<!--Footer-->
+		<div class="card-footer">
+			<button type="submit" class="btn btn-success btn-create"><i class="bi bi-floppy-fill"></i> Crear</button>
+		</div>
+		<button type="button" class="btn btn-primary btn-back" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+	</div>
+	@mensaje
+</EditForm>
+
+@code {
+	public Metas meta { get; set; } = new Metas();
+	public string? mensaje { get; set; }
+
+	public async Task Crear() {
+		var crear = await metaService.Crear(meta);
+		if (crear)
+		{
+			mensaje = "La meta se ha creado con éxito";
+			meta = new Metas();
+			mensaje = string.Empty;
+		}
+		else
+			mensaje = "La meta no se ha creado correctamente";
+	}
+
+	public void Volver() {
+		navigation.NavigateTo("/metas");
+	}
+}

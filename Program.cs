@@ -1,10 +1,18 @@
+using Microsoft.EntityFrameworkCore;
 using Parcial1_AP1_CristopherMarte.Components;
+using Parcial1_AP1_CristopherMarte.DAL;
+using Parcial1_AP1_CristopherMarte.Models;
+using Parcial1_AP1_CristopherMarte.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+builder.Services.AddDbContext<Contexto>(c => c.UseSqlite(builder.Configuration.GetConnectionString("ConStr")));
+builder.Services.AddScoped<MetaService>();
 
 var app = builder.Build();
 
