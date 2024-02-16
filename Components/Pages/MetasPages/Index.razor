@@ -13,14 +13,14 @@
 	</div>
 	<!--Body-->
 	<div class="card-body">
-		@if(metas.Count == 0) {
+		@if (metas.Count == 0) {
 			<p><em><strong>Cargando...</strong></em></p>
 		}
 		else {
 			<table class="table">
 				<thead>
 					<tr>
-						<th>meta Id</th>
+						<th>Meta Id</th>
 						<th>Fecha</th>
 						<th>Descripci&oacute;n</th>
 						<th>Monto</th>
@@ -43,29 +43,29 @@
 	<div class="card-footer">
 		<div class="row">
 			<div class="col-md-6">
-				<strong class="d-inline-block">Monto Total:</strong>
-				<strong class="d-inline-block">@montoTotal</strong>
+				<strong>Monto Total: @montoTotal</strong>
 			</div>
 		</div>
 	</div>
 </div>
 
-		@code {
-		public List<Metas> metas = new List<Metas>();
-		public decimal montoTotal { get; set; }
+@code {
+	public List<Metas> metas = new List<Metas>();
+	public decimal montoTotal { get; set; }
 
-		protected override async Task OnInitializedAsync() {
-			await Task.Delay(700);
-			metas = metaService.ObtenerLista(m => m.MetaId > 0);
-			montoTotal = metas.Sum(m => m.Monto);
-		}
+	protected override async Task OnInitializedAsync() {
+		await Task.Delay(700);
+		metas = metaService.ObtenerLista(m => m.MetaId > 0);
+		montoTotal = metas.Sum(m => m.Monto);
+	}
 
-		
 
-		public void IrACrear() {
-			navigation.NavigateTo("/Createmetas");
-		}
-		public void IrADetalles() {
-			navigation.NavigateTo("/Detailsmetas");
-		}
+
+	public void IrACrear() {
+		navigation.NavigateTo("/Createmetas");
+	}
+	public void IrADetalles() {
+		navigation.NavigateTo("/Detailsmetas");
+	}
+	
 }
