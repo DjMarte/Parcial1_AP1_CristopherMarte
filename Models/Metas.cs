@@ -13,6 +13,8 @@ public class Metas
     [Required(ErrorMessage = "Descripción obligatorio")]
     public string? Descripcion { get; set; }
 
+    [Range(1, float.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
+    [Required(ErrorMessage = "Ingrese un Monto")]
     public decimal Monto { get; set; }
 
 }
