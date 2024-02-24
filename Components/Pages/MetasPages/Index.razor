@@ -32,7 +32,7 @@
 							<td>@meta.MetaId</td>
 							<td>@meta.Fecha.ToShortDateString()</td>
 							<td>@meta.Descripcion</td>
-							<td>@meta.Monto</td>
+							<td>@meta.Monto.ToString("N")</td>
 						</tr>
 					}
 				</tbody>
@@ -42,7 +42,10 @@
 	<!--Footer-->
 	<div class="card-footer">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-9">
+				<strong>Cantidad de Metas: @metas.Count()</strong>
+			</div>
+			<div class="col-3">
 				<strong>Monto Total: @montoTotal</strong>
 			</div>
 		</div>
