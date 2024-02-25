@@ -1,4 +1,5 @@
 ﻿@page "/metas"
+@using System.Linq.Expressions
 @inject MetaService metaService
 @rendermode InteractiveServer
 @inject NavigationManager navigation
@@ -8,11 +9,54 @@
 	<!--Header-->
 	<div class="card-header">
 		<h3><strong>Metas</strong></h3>
-		<button type="button" class="btn btn-primary" @onclick="IrACrear"><i class="bi bi-plus-circle" /> Crear</button>
-		<button type="button" class="btn btn-info" @onclick="IrADetalles"><i class="bi bi-card-list" /> Detalles</button>
 	</div>
 	<!--Body-->
 	<div class="card-body">
+		<div class="row">
+			<div class="col-3">
+				<button type="button" class="btn btn-primary" @onclick="IrACrear"><i class="bi bi-plus-circle" /> Crear</button>
+				<button type="button" class="btn btn-info" @onclick="IrADetalles"><i class="bi bi-card-list" /> Detalles</button>
+			</div>
+			<div class="col-md-3">
+				<InputSelect class="form-select col-2" @bind-Value="opcion">
+					<option value="1">Descripci&oacute;n</option>
+					<option value="2">Fecha</option>
+					<option value="3">Monto</option>
+				</InputSelect>
+			</div>
+			<div class="col-md-2">
+				<label class="input-group-text">Busqueda</label>
+			</div>
+			<div class="col-md-4">
+
+				@switch (opcion) {
+					case 1:
+						<div class="input-group">
+							<InputText @bind-Value="meta.Descripcion" class="form-control"></InputText>
+							<button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"></button>
+						</div>
+						break;
+					case 2:
+						<div class="input-group">
+							<InputDate @bind-Value="fechaInicio" class="form-control"></InputDate>
+							<InputDate @bind-Value="fechaFin" class="form-control"></InputDate>
+							<button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"></button>
+						</div>
+						break;
+					case 3:
+						<div class="input-group">
+							<InputNumber @bind-Value="meta.Monto" class="form-control"></InputNumber>
+							<button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"></button>
+						</div>
+						break;
+
+				}
+
+
+			</div>
+
+
+		</div>
 		@if (metas.Count == 0) {
 			<p><em><strong>Cargando...</strong></em></p>
 		}
@@ -54,15 +98,29 @@
 
 @code {
 	public List<Metas> metas = new List<Metas>();
+	public Metas meta { get; set; } = new Metas();
 	public decimal montoTotal { get; set; }
+	public int opcion { get; set; }
+	public DateTime fechaInicio { get; set; }
+	public DateTime fechaFin { get; set; }
 
 	protected override async Task OnInitializedAsync() {
 		await Task.Delay(700);
+		//Expression<Func<Metas, bool>> criterio = meta => meta.MetaId > 0;
 		metas = metaService.ObtenerLista(m => m.MetaId > 0);
 		montoTotal = metas.Sum(m => m.Monto);
 	}
 
-
+	public void Buscar() {
+		if (opcion == 1 && !string.IsNullOrEmpty(meta.Descripcion))
+			metas = metaService.ObtenerLista(m => m.Descripcion!.ToLower().Contains(meta.Descripcion.ToLower()));
+		else if (opcion == 2 && fechaFin != default && fechaInicio != default)
+			metas = metaService.ObtenerLista(m => m.Fecha <= fechaFin && m.Fecha >= fechaInicio);
+		else if (opcion == 3 && meta.Monto > 0)
+			metas = metaService.ObtenerLista(m => m.Monto == meta.Monto);
+		else
+			metas = metaService.ObtenerLista(m => true);
+	}
 
 	public void IrACrear() {
 		navigation.NavigateTo("/Createmetas");
@@ -70,5 +128,5 @@
 	public void IrADetalles() {
 		navigation.NavigateTo("/Detailsmetas");
 	}
-	
+
 }
